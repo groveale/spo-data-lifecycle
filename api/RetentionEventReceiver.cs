@@ -1,3 +1,4 @@
+using Azure;
 using Azure.Data.Tables;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,16 @@ namespace groverale
                 { "UserId", retentionEvent.UserId },
                 { "EventTime", retentionEvent.EventTime }
             };
-            await tableClient.AddEntityAsync(entity);
+
+            try
+            {
+                await tableClient.AddEntityAsync(entity);
+            }
+            catch (RequestFailedException e)
+            {
+                _logger.LogError(e.Message);
+                return new BadRequestObjectResult($"Error inserting into table. {e.Message}");
+            }
 
             return new OkObjectResult("retentionEvent inserted successfully");
 
