@@ -2,13 +2,12 @@
 # Description: This script sets the default retention label for a library
 
 
-
 ## Need to get all libraries in the site (excucling system libaries)
 ## For each library, set the default retention label
 
 # Parameters
-$retentionLabel = "A  "
-$siteUrl = "https://groverale.sharepoint.com/sites/DocLCTest"
+$retentionLabel = "ArchiveItem"
+$siteUrl = "https://groverale.sharepoint.com/sites/RententionLAbelTest"
 
 # Connect to the site
 Connect-PnPOnline -Url $siteUrl -Interactive
@@ -22,6 +21,7 @@ foreach ($lib in $docLibs)
 {
     Write-Host "Setting default retention label for $($lib.Title)" -ForegroundColor DarkGreen
     # Add Rentention Label to default view
+    $libraryName = $lib.Title
     $defaultView = Get-PnPView -List $libraryName | where { $_.DefaultView -eq $true }
 
     # Get the fields for the view
@@ -38,10 +38,10 @@ foreach ($lib in $docLibs)
 
     # Set the default retention label for the library
     Set-PnPRetentionLabel -List $libraryName -Label $retentionLabel -SyncToItems $true
+
+    # For some reasone we need to execute twice - Probably a PnP Bug but with a delay
+    #Set-PnPRetentionLabel -List $libraryName -Label $retentionLabel -SyncToItems $true 
 }
 
 
-
-# For some reasone we need to execute twice - Probably a PnP Bug but with a delay
-#Set-PnPRetentionLabel -List $libraryName -Label $retentionLabel -SyncToItems $true 
 
