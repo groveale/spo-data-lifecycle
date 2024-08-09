@@ -42,21 +42,25 @@ namespace groverale
 
             // push to table storage
             // Insert retentionEvent into Azure Table Storage
+            // Create a new table client
             var entity = new TableEntity(retentionEvent.SiteId.ToString(), retentionEvent.ItemUniqueId.ToString())
             {
                 { "SiteUrl", retentionEvent.SiteUrl },
                 { "ListName", retentionEvent.ListName },
                 { "FolderPath", retentionEvent.FolderPath },
                 { "DocumentName", retentionEvent.DocumentName },
+                { "SiteId", retentionEvent.SiteId },
                 { "WebId", retentionEvent.WebId },
                 { "ListId", retentionEvent.ListId },
+                { "ItemUniqueId", retentionEvent.ItemUniqueId },
                 { "ListItemId", retentionEvent.ListItemId },
                 { "LibraryName", retentionEvent.LibraryName },
                 { "WorkloadName", retentionEvent.WorkloadName },
                 { "ExistingLabelId", retentionEvent.ExistingLabelId },
                 { "UserId", retentionEvent.UserId },
-                { "EventTime", retentionEvent.EventTime }
+                { "EventTime", retentionEvent.EventTime }   
             };
+        
 
             try
             {
