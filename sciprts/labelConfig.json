@@ -1,0 +1,31 @@
+[
+    {
+        "Name": "Record",
+        "RetentionDuration": "Unlimited",
+        "RetentionAction": "None"
+    },
+    {
+        "Name": "Non record",
+        "RetentionDuration": 1095,
+        "RetentionAction": "Delete",
+        "RetentionTrigger": "Modification"
+    },
+    {
+        "Name": "User retained non record 1 year",
+        "RetentionDuration": 365,
+        "RetentionAction": "Delete",
+        "RetentionTrigger": "LabelApplied"
+    },
+    {
+        "Name": "User retained non record 3 years",
+        "RetentionDuration": 1095,
+        "RetentionAction": "Delete",
+        "RetentionTrigger": "LabelApplied"
+    },
+    {
+        "Name": "User retained non record 5 years",
+        "RetentionDuration": 1825,
+        "RetentionAction": "Delete",
+        "RetentionTrigger": "LabelApplied"
+    }
+]
