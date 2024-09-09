@@ -7,10 +7,16 @@
 
 # Parameters
 $retentionLabel = "ArchiveItem"
-$siteUrl = "https://groverale.sharepoint.com/sites/RententionLAbelTest"
+$siteUrl = "https://groverale.sharepoint.com/sites/SetLibraryDefaults"
+
+# Auth (cert needs to be local on the device)
+# Permission - SharePoint.Manage.All
+$clientId = "bc5a937b-42b5-49e1-83f4-dfe0b8b67497"
+$thumbprint = "0CC78F9E0F578F9F7B2483E9DDE97BA6FDC0168E"
+$tenant = "groverale"
 
 # Connect to the site
-Connect-PnPOnline -Url $siteUrl -Interactive
+Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant "$tenant.onmicrosoft.com" -Thumbprint $thumbprint
 
 ## Get doc libs (that aren't system lists and isn't the pages library)
 $docLibs = Get-PnPList -Includes IsSystemList, Fields | Where { ($_.BaseType -eq "DocumentLibrary" ) -and !($_.IsSystemList) -and ($_.Title -ne "Site Pages")}
