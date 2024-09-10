@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "auditlog": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7175",
+      "launchBrowser": false
+    }
+  }
+}
