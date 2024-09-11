@@ -12,12 +12,14 @@ var host = new HostBuilder()
         // Register HttpClient
         services.AddHttpClient();
 
-    // Register the SettingsService
-    services.AddSingleton<ISettingsService, SettingsService>();
+        // Register the SettingsService
+        services.AddSingleton<ISettingsService, SettingsService>();
 
-    // Register your custom service here
-    services.AddSingleton<IM365ActivityService, M365ActivityService>();
+        // Register the M365ActivityService
+        services.AddSingleton<IM365ActivityService, M365ActivityService>();
 
+        // Register the AzureTableService
+        services.AddSingleton<IAzureTableService, AzureTableService>();
 
     })
     .Build();

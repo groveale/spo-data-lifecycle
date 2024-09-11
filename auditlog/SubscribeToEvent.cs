@@ -35,7 +35,7 @@ namespace groveale
 
             try
             {
-                var response = await _m365ActivityService.SubscribeToAuditEventsAsync(contentType, webhookAddress, authId);
+                var response = await _m365ActivityService.SubscribeToAuditEventsAsync(contentType, webhookAddress);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
