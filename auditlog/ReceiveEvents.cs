@@ -46,7 +46,7 @@ namespace groveale
             // This is M365 initial validation request
             if (!string.IsNullOrEmpty(validationCodeFromPayload))
             {
-                var validationHeaderCode = req.Query["Webhook-ValidationCode"];
+                var validationHeaderCode = req.Headers["Webhook-ValidationCode"];
                 if (validationHeaderCode != validationCodeFromPayload)
                 {
                     _logger.LogError("Invalid Webhook-ValidationCode header.");
