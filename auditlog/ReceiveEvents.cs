@@ -1,3 +1,4 @@
+using groveale.Models;
 using groveale.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,32 +30,70 @@ namespace groveale
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
+            try
+            {
+                // Log the webhook trigger event
+                await _azureTableService.LogWebhookTriggerAsync(new LogEvent
+                {
+                    EventId = Guid.NewGuid().ToString(),
+                    EventName = "WebhookTrigger",
+                    EventMessage = "Webhook triggered",
+                    EventDetails = "Webhook event",
+                    EventCategory = "Webhook",
+                    EventTime = DateTime.UtcNow
+                });
+            }
+            catch
+            {
+                _logger.LogError("Error logging event.");
+                // continue
+            }
+
             // validate that the headers contains the correct Webhook-AuthID and matches the configured value
             var authId = req.Headers["Webhook-AuthID"];
             if (string.IsNullOrEmpty(authId) || authId != _settingsService.AuthGuid)
             {
                 _logger.LogError("Invalid Webhook-AuthID header.");
+                // Log the webhook trigger event
+                await _azureTableService.LogWebhookTriggerAsync(new LogEvent
+                {
+                    EventId = Guid.NewGuid().ToString(),
+                    EventName = "WebhookTrigger",
+                    EventMessage = "Webhook triggered",
+                    EventDetails = "Invalid Webhook-AuthID header",
+                    EventCategory = "Webhook",
+                    EventTime = DateTime.UtcNow
+                });
                 return new BadRequestObjectResult("Invalid Webhook-AuthID header.");
             }
 
             // Parse the request body to extract the validation code from the payload
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var payload = JObject.Parse(requestBody);
-            var validationCodeFromPayload = payload["validationCode"]?.ToString();
 
-            // If the validation code is present, validate it against the Webhook-ValidationCode header
-            // This is M365 initial validation request
-            if (!string.IsNullOrEmpty(validationCodeFromPayload))
+            try 
             {
-                var validationHeaderCode = req.Headers["Webhook-ValidationCode"];
-                if (validationHeaderCode != validationCodeFromPayload)
-                {
-                    _logger.LogError("Invalid Webhook-ValidationCode header.");
-                    return new BadRequestObjectResult("Invalid Webhook-ValidationCode header.");
-                }
-                return new OkResult();
-            }
+                var payload = JObject.Parse(requestBody);
+                var validationCodeFromPayload = payload["validationCode"]?.ToString();
 
+                // If the validation code is present, validate it against the Webhook-ValidationCode header
+                // This is M365 initial validation request
+                if (!string.IsNullOrEmpty(validationCodeFromPayload))
+                {
+                    var validationHeaderCode = req.Headers["Webhook-ValidationCode"];
+                    if (validationHeaderCode != validationCodeFromPayload)
+                    {
+                        _logger.LogError("Invalid Webhook-ValidationCode header.");
+                        return new BadRequestObjectResult("Invalid Webhook-ValidationCode header.");
+                    }
+                    return new OkResult();
+                }
+            }
+            catch (JsonReaderException)
+            {
+                // The payload is not a JSON object, its a list of notifications (Hopefully)
+                // Could probably use a better way to determine if the payload is a list of notifications
+            }
+            
             try
             {
                 // Deserialize the request body into a list of NotificationResponse objects
