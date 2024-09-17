@@ -1,0 +1,4 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+    "additionalRowClass": "=if([$_ComplianceTag] == 'User retained non record 1 year' && (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) > 335, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'Non record' && (Number(@now) - Number([$Modified])) / (1000 * 60 * 60 * 24) > 1065, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'User retained non record 3 years' && (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) > 1065, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'User retained non record 5 years' && (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) > 1795, 'sp-field-severity--severeWarning', ''))))"
+}

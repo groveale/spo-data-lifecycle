@@ -6,14 +6,22 @@
 ## For each library, set the default retention label
 
 # Parameters
-$retentionLabel = "ArchiveItem"
-$siteUrl = "https://groverale.sharepoint.com/sites/SetLibraryDefaults"
+$retentionLabel = "Non record"
+$siteUrl = "https://groverale.sharepoint.com/sites/labelstest"
 
 # Auth (cert needs to be local on the device)
 # Permission - SharePoint.Manage.All
 $clientId = "bc5a937b-42b5-49e1-83f4-dfe0b8b67497"
 $thumbprint = "0CC78F9E0F578F9F7B2483E9DDE97BA6FDC0168E"
 $tenant = "groverale"
+
+# JSON View Formatting
+$jsonViewFormatting = @'
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/sp/v2/row-formatting.schema.json",
+    "additionalRowClass": "=if([$_ComplianceTag] == 'User retained non record 1 year' &amp;&amp; (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) &gt; 335, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'Non record' &amp;&amp; (Number(@now) - Number([$Modified])) / (1000 * 60 * 60 * 24) &gt; 1065, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'User retained non record 3 years' &amp;&amp; (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) &gt; 1065, 'sp-field-severity--severeWarning', if([$_ComplianceTag] == 'User retained non record 5 years' &amp;&amp; (Number(@now) - Number(Date([$_ComplianceTagWrittenTime]))) / (1000 * 60 * 60 * 24) &gt; 1795, 'sp-field-severity--severeWarning', ''))))"
+}
+'@
 
 # Connect to the site
 Connect-PnPOnline -Url $siteUrl -ClientId $clientId -Tenant "$tenant.onmicrosoft.com" -Thumbprint $thumbprint
@@ -41,6 +49,16 @@ foreach ($lib in $docLibs)
     }
 
     $updatedView = Set-PnPView -List $libraryName -Identity $defaultView.Title -Fields @($viewFields)
+
+    # Does the default view have a custom formatter?
+    if ($defaultView.CustomFormatter -eq $null) {
+    
+        $updatedView = Set-PnPView -List $libraryName -Identity $defaultView.Title -Values @{CustomFormatter = $jsonViewFormatting}
+    }
+
+
+
+    
 
     # Set the default retention label for the library
     Set-PnPRetentionLabel -List $libraryName -Label $retentionLabel -SyncToItems $true
