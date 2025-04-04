@@ -23,7 +23,7 @@ for ($i = 1; $i -le $numberOfGroups; $i++) {
     $alias = "group$guid"
 
     # Create the group without owners
-    $newGroup = New-UnifiedGroup -DisplayName $displayName -Alias $alias
+    $newGroup = New-UnifiedGroup -DisplayName $displayName -Alias $alias -
 
     # Add members to the group
     foreach ($member in $members) {

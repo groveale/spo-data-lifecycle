@@ -1,7 +1,7 @@
 # Import the necessary module
 Import-Module ExchangeOnlineManagement
 
-$user = "alex@groverale.onmicrosoft.com"
+$user = "admin@M365CPI77517573.onmicrosoft.com"
 
 # Connect to Exchange Online (will open up a browser window for authentication)
 Connect-ExchangeOnline -ShowProgress $true -UserPrincipalName $user 

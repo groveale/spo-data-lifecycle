@@ -15,6 +15,10 @@ $clientId = "bc5a937b-42b5-49e1-83f4-dfe0b8b67497"
 $thumbprint = "0CC78F9E0F578F9F7B2483E9DDE97BA6FDC0168E"
 $tenant = "groverale"
 
+# $clientId = "e0206210-3296-4421-8a10-e422a03755b5"
+# $thumbprint = "0CC78F9E0F578F9F7B2483E9DDE97BA6FDC0168E"
+# $tenant = "M365CPI77517573"
+
 # JSON View Formatting
 $jsonViewFormatting = @'
 {
@@ -55,10 +59,6 @@ foreach ($lib in $docLibs)
     
         $updatedView = Set-PnPView -List $libraryName -Identity $defaultView.Title -Values @{CustomFormatter = $jsonViewFormatting}
     }
-
-
-
-    
 
     # Set the default retention label for the library
     Set-PnPRetentionLabel -List $libraryName -Label $retentionLabel -SyncToItems $true
